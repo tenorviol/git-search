@@ -1,12 +1,19 @@
 #!/bin/sh
 
-GIT_BASE=`git rev-parse --show-toplevel`
+help()
+{
+  echo 'Usage:'
+  echo '  git-search --index'
+  echo '  git-search <search terms>'
+}
+
+REPO_BASE=`git rev-parse --show-toplevel`
 if [ 0 -ne $? ]; then
-  echo $GIT_BASE
+  echo $REPO_BASE
   exit 1
 fi
 
-INDEX="$GIT_BASE/.gitsearch/index"
+INDEX="$REPO_BASE/.gitsearch/index"
 
 SOURCE=$0
 while [ -h "$SOURCE" ] ; do SOURCE="$(readlink "$SOURCE")"; done
@@ -17,12 +24,10 @@ export CLASSPATH="$GIT_SEARCH_BASE/lucene-core-3.5.0.jar:$GIT_SEARCH_BASE/src"
 
 COMMAND=$1
 
-if [ $COMMAND == 'index' ]; then
-  java org.apache.lucene.demo.IndexFiles -index $INDEX -docs $GIT_BASE
-elif [ $COMMAND == 'query' ]; then
-  java org.apache.lucene.demo.SearchFiles -index $INDEX -query $2
+if [ -z $COMMAND ]; then
+    help
+elif [ $COMMAND == '--index' ]; then
+  java com.github.tenorviol.gitsearch.IndexFiles -index $INDEX -docs $REPO_BASE
 else
-  echo 'Usage:'
-  echo '  git-search index'
-  echo '  git-search query <search terms>'
+  java com.github.tenorviol.gitsearch.SearchFiles -index $INDEX -query $COMMAND
 fi

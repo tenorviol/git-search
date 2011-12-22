@@ -1,0 +1,28 @@
+#!/bin/sh
+
+GIT_BASE=`git rev-parse --show-toplevel`
+if [ 0 -ne $? ]; then
+  echo $GIT_BASE
+  exit 1
+fi
+
+INDEX="$GIT_BASE/.gitsearch/index"
+
+SOURCE=$0
+while [ -h "$SOURCE" ] ; do SOURCE="$(readlink "$SOURCE")"; done
+DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+
+GIT_SEARCH_BASE=`dirname $DIR`
+export CLASSPATH="$GIT_SEARCH_BASE/lucene-core-3.5.0.jar:$GIT_SEARCH_BASE/src"
+
+COMMAND=$1
+
+if [ $COMMAND == 'index' ]; then
+  java org.apache.lucene.demo.IndexFiles -index $INDEX -docs $GIT_BASE
+elif [ $COMMAND == 'query' ]; then
+  java org.apache.lucene.demo.SearchFiles -index $INDEX -query $2
+else
+  echo 'Usage:'
+  echo '  git-search index'
+  echo '  git-search query <search terms>'
+fi

@@ -141,10 +141,24 @@ public class IndexFiles {
    * @param file The file to index, or the directory to recurse into to find files to index
    * @throws IOException
    */
-  static void indexDocs(IndexWriter writer, File file)
-    throws IOException {
-    if (file.getName().charAt(0) == '.') {
+  static void indexDocs(IndexWriter writer, File file) throws IOException {
+    // TODO: make these exclusions configurable
+    String fileName = file.getName();
+    if (fileName.charAt(0) == '.') {
         return;
+    }
+    int dotLoc = fileName.lastIndexOf('.');
+    String extension = fileName.substring(dotLoc + 1);
+    // known binary extensions
+    if (extension.equals("jpg")
+        || extension.equals("png")
+        || extension.equals("gif")
+        || extension.equals("pdf")
+        || extension.equals("fla")
+        || extension.equals("flv")
+        || extension.equals("swf")
+        || extension.equals("swz")) {
+      return;
     }
 
     // do not try to index files that cannot be read

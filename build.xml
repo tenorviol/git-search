@@ -1,0 +1,36 @@
+<project>
+  <property name="version"    value="0.1.0"/>
+  <property name="main-class" value="com.github.tenorviol.gitsearch.GitSearch"/>
+  <property name="lib.dir"    value="lib"/>
+
+  <path id="classpath">
+    <fileset dir="${lib.dir}" includes="**/*.jar"/>
+  </path>
+
+  <target name="clean">
+    <delete dir="build"/>
+    <delete file="lib/gitsearch-*.jar"/>
+  </target>
+
+  <target name="compile">
+    <mkdir dir="build/classes"/>
+    <javac srcdir="src" destdir="build/classes" classpathref="classpath" includeantruntime="false"/>
+  </target>
+
+  <target name="jar" depends="compile">
+    <jar destfile="lib/gitsearch-${version}.jar" basedir="build/classes">
+      <manifest>
+        <attribute name="Main-Class" value="${main-class}"/>
+      </manifest>
+    </jar>
+  </target>
+
+  <target name="run" depends="jar">
+    <java fork="true" classname="${main-class}">
+      <classpath>
+        <path refid="classpath"/>
+        <path location="${jar.dir}/*.jar"/>
+      </classpath>
+    </java>
+  </target>
+</project>

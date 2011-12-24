@@ -1,23 +1,30 @@
 <project>
-  <property name="version"    value="0.1.0"/>
-  <property name="main-class" value="com.github.tenorviol.gitsearch.GitSearch"/>
+  <property name="version"    value="0.1"/>
+
+  <property name="src.dir"    value="src"/>
+  <property name="build.dir"  value="build"/>
   <property name="lib.dir"    value="lib"/>
+  <property name="test.dir"   value="test"/>
+  <property name="junit.jar"  value="/usr/local/junit/junit.jar"/>
+
+  <property name="main-class" value="com.github.tenorviol.gitsearch.GitSearch"/>
 
   <path id="classpath">
-    <fileset dir="${lib.dir}" includes="**/*.jar"/>
+    <fileset dir="${lib.dir}" includes="*.jar"/>
+    <pathelement location="${junit.jar}" />
   </path>
 
   <target name="clean">
     <delete dir="build"/>
-    <delete file="lib/gitsearch-*.jar"/>
+    <delete>
+      <fileset dir="${lib.dir}"  includes="gitsearch-*.jar"/>
+      <fileset dir="${test.dir}" includes="**/*.class"/>
+    </delete>
   </target>
 
   <target name="compile">
     <mkdir dir="build/classes"/>
-    <javac srcdir="src" destdir="build/classes" classpathref="classpath" includeantruntime="false"/>
-  </target>
-
-  <target name="jar" depends="compile">
+    <javac srcdir="${src.dir}" destdir="build/classes" classpathref="classpath" includeantruntime="false"/>
     <jar destfile="lib/gitsearch-${version}.jar" basedir="build/classes">
       <manifest>
         <attribute name="Main-Class" value="${main-class}"/>
@@ -25,7 +32,20 @@
     </jar>
   </target>
 
-  <target name="run" depends="jar">
+  <target name="test" depends="compile">
+    <javac srcdir="${test.dir}" classpathref="classpath" includeantruntime="false"/>
+    <junit printsummary="yes">
+      <classpath>
+        <path refid="classpath"/>
+      </classpath>
+
+      <batchtest fork="yes">
+        <fileset dir="${test.dir}" includes="*Test.java"/>
+      </batchtest>
+    </junit>
+  </target>
+
+  <target name="run" depends="compile">
     <java fork="true" classname="${main-class}">
       <classpath>
         <path refid="classpath"/>

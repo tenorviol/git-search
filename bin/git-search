@@ -18,14 +18,14 @@ INDEX="$REPO_BASE/.git/search/index"
 SOURCE=$0
 while [ -h "$SOURCE" ] ; do SOURCE="$(readlink "$SOURCE")"; done
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+BASE=`dirname $DIR`
+LIB=$BASE/lib
 
-GIT_SEARCH_BASE=`dirname $DIR`
-export CLASSPATH="$GIT_SEARCH_BASE/lucene-core-3.5.0.jar:$GIT_SEARCH_BASE/src"
+export CLASSPATH="$LIB/lucene-core-3.5.0.jar:$LIB/gitsearch-0.1.jar"
 
 COMMAND=$1
-
 if [ -z $COMMAND ]; then
-    help
+  help
 elif [ $COMMAND == '--index' ]; then
   java com.github.tenorviol.gitsearch.IndexFiles -index $INDEX -docs $REPO_BASE
 else

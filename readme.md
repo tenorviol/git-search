@@ -3,8 +3,8 @@ git-search
 
 Create a searchable index of the current repo
 
-    git search index
+    git search --index
 
 Search
 
-    git search query foo
+    git search <search term>

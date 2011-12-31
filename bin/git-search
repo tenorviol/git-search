@@ -27,7 +27,7 @@ COMMAND=$1
 if [ -z $COMMAND ]; then
   help
 elif [ $COMMAND == '--index' ]; then
-  java com.github.tenorviol.gitsearch.IndexFiles -index $INDEX -docs $REPO_BASE
+  java com.github.tenorviol.gitsearch.IndexFiles --index $INDEX index $REPO_BASE
 else
   java com.github.tenorviol.gitsearch.SearchFiles -index $INDEX -query $COMMAND
 fi

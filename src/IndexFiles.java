@@ -49,42 +49,21 @@ public class IndexFiles {
   private IndexFiles() {}
 
   /** Index all text files under a directory. */
-  public static void main(String[] args) {
-    String usage = "java org.apache.lucene.demo.IndexFiles"
-                 + " [-index INDEX_PATH] [-docs DOCS_PATH] [-update]\n\n"
-                 + "This indexes the documents in DOCS_PATH, creating a Lucene index"
-                 + "in INDEX_PATH that can be searched with SearchFiles";
-    String indexPath = "index";
-    String docsPath = null;
+  public static void index(CommandLine cl) {
     boolean create = true;
-    for(int i=0;i<args.length;i++) {
-      if ("-index".equals(args[i])) {
-        indexPath = args[i+1];
-        i++;
-      } else if ("-docs".equals(args[i])) {
-        docsPath = args[i+1];
-        i++;
-      } else if ("-update".equals(args[i])) {
-        create = false;
-      }
-    }
 
-    if (docsPath == null) {
-      System.err.println("Usage: " + usage);
-      System.exit(1);
-    }
-
-    final File docDir = new File(docsPath);
+    // TODO: multi files
+    final File docDir = new File(cl.commandArgs.get(0));
     if (!docDir.exists() || !docDir.canRead()) {
-      System.out.println("Document directory '" +docDir.getAbsolutePath()+ "' does not exist or is not readable, please check the path");
+      System.out.println("Document directory '" + docDir.getAbsolutePath() + "' does not exist or is not readable, please check the path");
       System.exit(1);
     }
 
     Date start = new Date();
     try {
-      System.out.println("Indexing to directory '" + indexPath + "'...");
+      System.out.println("Indexing to directory '" + cl.indexPath + "'...");
 
-      Directory dir = FSDirectory.open(new File(indexPath));
+      Directory dir = FSDirectory.open(new File(cl.indexPath));
       Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_31);
       IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_31, analyzer);
 

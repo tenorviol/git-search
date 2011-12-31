@@ -5,17 +5,25 @@
   <property name="build.dir"  value="build"/>
   <property name="lib.dir"    value="lib"/>
   <property name="test.dir"   value="test"/>
-  <property name="junit.jar"  value="/usr/local/junit/junit.jar"/>
+  <property name="testng.jar"  value="/usr/local/lib/java/testng.jar"/>
 
   <property name="main-class" value="com.github.tenorviol.gitsearch.GitSearch"/>
 
+  <taskdef resource="testngtasks" classpath="${testng.jar}"/>
+
   <path id="classpath">
     <fileset dir="${lib.dir}" includes="*.jar"/>
-    <pathelement location="${junit.jar}" />
+  </path>
+
+  <path id="test-classpath">
+    <path refid="classpath"/>
+    <pathelement location="${test.dir}"/>
+    <pathelement location="${testng.jar}"/>
   </path>
 
   <target name="clean">
     <delete dir="build"/>
+    <delete dir="{$test.dir}/report"/>
     <delete>
       <fileset dir="." includes="**/*.class"/>
       <fileset dir="${lib.dir}"  includes="gitsearch-*.jar"/>
@@ -33,16 +41,12 @@
   </target>
 
   <target name="test" depends="compile">
-    <javac srcdir="${test.dir}" classpathref="classpath" includeantruntime="false"/>
-    <junit printsummary="yes">
-      <classpath>
-        <path refid="classpath"/>
-      </classpath>
-
-      <batchtest fork="yes">
-        <fileset dir="${test.dir}" includes="*Test.java"/>
-      </batchtest>
-    </junit>
+    <javac srcdir="${test.dir}" classpathref="test-classpath" includeantruntime="false"/>
+    <mkdir dir="${test.dir}/report"/>
+    
+    <testng classpathref="test-classpath" outputDir="${test.dir}/report" haltOnFailure="true" verbose="2">
+      <classfileset dir="${test.dir}" includes="**/*Test*.class" />
+    </testng>
   </target>
 
   <target name="run" depends="compile">

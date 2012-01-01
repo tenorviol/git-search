@@ -5,14 +5,23 @@ import com.github.tenorviol.gitsearch.CommandLine;
 
 public class CommandLineTest {
 
-  @Test
-  public void testFoo() {
-    String[] args = {"--index", "./foo/index", "index"};
-    try {
-      CommandLine cl = new CommandLine(args);
-    } catch (Exception e) {
-      System.out.println(e);
-    }
-    Assert.assertEquals(1,1);
+  @DataProvider(name = "invalid-command-lines")
+  public Object[][] illegalCommandLineProvider() {
+    return new Object[][] {
+      { null },
+      { "--index" },
+      { "--index ./.index" },
+      { "--index ./.index index" },
+      { "--index ./.index query" },
+      { "--index ./.index non-command" },
+      { "query --index ./.index foo" },
+    };
+  }
+
+  @Test(dataProvider       = "invalid-command-lines",
+        expectedExceptions = IllegalArgumentException.class)
+  public void testInvalidCommandLineThrowsIllegalArgumentException(String commandLine) {
+    String[] args = (null == commandLine) ? new String[] {} : commandLine.split(" ");
+    CommandLine cl = new CommandLine(args);
   }
 }

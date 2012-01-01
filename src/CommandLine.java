@@ -15,15 +15,15 @@ public class CommandLine {
     
     if ("index".equals(command)) {
       parseIndexArgs();
-    } else if ("search".equals(command)) {
-      parseSearchArgs();
+    } else if ("query".equals(command)) {
+      parseQueryArgs();
     } else {
       throw new IllegalArgumentException("Unknown command, '" + command + "'");
     }
   }
   
   private void parseCommand(List<String> args) throws IllegalArgumentException {
-    if (!"--index".equals(args.get(0)) || args.size() < 2) {
+    if (args.size() < 2 || !"--index".equals(args.get(0))) {
       throw new IllegalArgumentException("--index <path> required");
     }
     indexPath = args.get(1);
@@ -41,7 +41,7 @@ public class CommandLine {
     }
   }
   
-  private void parseSearchArgs() throws IllegalArgumentException {
+  private void parseQueryArgs() throws IllegalArgumentException {
     if (commandArgs.size() == 0) {
       throw new IllegalArgumentException("No search query given");
     }

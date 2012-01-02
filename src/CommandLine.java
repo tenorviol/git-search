@@ -53,7 +53,7 @@ public class CommandLine {
     //             + " [-index INDEX_PATH] [-docs DOCS_PATH] [-update]\n\n"
     //             + "This indexes the documents in DOCS_PATH, creating a Lucene index"
     //             + "in INDEX_PATH that can be searched with SearchFiles";
-    System.out.println("java com.github.tenorviol.gitsearch.CommandLine --index <index path> search <query term(s)>");
+    System.out.println("java com.github.tenorviol.gitsearch.CommandLine --index <index path> query <query term(s)>");
     //String usage =
     //  "Usage:\tjava org.apache.lucene.demo.SearchFiles [-index dir] [-field f] [-repeat n] [-queries file] [-query string] [-raw] [-paging hitsPerPage]\n\nSee http://lucene.apache.org/java/4_0/demo.html for details.";
   }

@@ -21,13 +21,14 @@ DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 BASE=`dirname $DIR`
 LIB=$BASE/lib
 
-export CLASSPATH="$LIB/lucene-core-3.5.0.jar:$LIB/gitsearch-0.1.jar"
+CLASSPATH="$LIB/lucene-core-3.5.0.jar:$LIB/gitsearch-0.1.jar"
+echo $CLASSPATH
 
 COMMAND=$1
 if [ -z $COMMAND ]; then
   help
 elif [ $COMMAND == '--index' ]; then
-  java com.github.tenorviol.gitsearch.IndexFiles --index $INDEX index $REPO_BASE
+  java -classpath $CLASSPATH com.github.tenorviol.gitsearch.GitSearch --index $INDEX index $REPO_BASE
 else
-  java com.github.tenorviol.gitsearch.SearchFiles -index $INDEX -query $COMMAND
+  java -classpath $CLASSPATH com.github.tenorviol.gitsearch.GitSearch --index $INDEX query $COMMAND
 fi
